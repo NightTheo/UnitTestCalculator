@@ -1,5 +1,5 @@
-import {Calculator} from "./calculator";
-import {DivideByZeroException} from "./divide-by-zero.exception";
+import {Calculator} from "./calculator/calculator";
+import {DivideByZeroException} from "./calculator/divide-by-zero.exception";
 
 describe('calculator', () => {
     const calculator: Calculator = new Calculator();
