@@ -2,10 +2,10 @@ export class User {
     email: string;
     lastname: string;
     firstname: string;
-    birthdate: string;
+    birthdate: Date;
 
 
-    constructor(email: string, lastname: string, firstname: string, birthdate: string) {
+    constructor(email: string, lastname: string, firstname: string, birthdate: Date) {
         this.email = email;
         this.lastname = lastname;
         this.firstname = firstname;
@@ -22,15 +22,18 @@ export class User {
     }
 
     isLastnameValid(): boolean {
-        return false;
+        return this.lastname.trim().length > 0;
     }
 
     isFirstnameValid(): boolean {
-        return false;
+        return this.firstname.trim().length > 0;
     }
 
-    pisBirthdateValid(): boolean {
-        return false;
+    isBirthdateValid(): boolean {
+        const today: Date = new Date();
+        const thirteenYearsAndADayAgo: Date = new Date();
+        thirteenYearsAndADayAgo.setFullYear(today.getFullYear() - 13);
+        return this.birthdate <= thirteenYearsAndADayAgo;
     }
 
     public isValid() {
