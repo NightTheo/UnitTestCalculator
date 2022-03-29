@@ -38,43 +38,69 @@ describe('email', () => {
 
 describe('names', () => {
     const date: Date = new Date;
-    it('should validate name', () => {
+    it('should validate lastname', () => {
         const user = new User(
             'email',
             'lastname','firstname',
             date
         );
         expect(user.isLastnameValid()).toBeTruthy();
+    })
+
+    it('should validate firstname', () => {
+        const user = new User(
+            'email',
+            'lastname','firstname',
+            date
+        );
         expect(user.isFirstnameValid()).toBeTruthy();
     })
 
-    it('should not validate empty names', () => {
+    it('should not validate empty lastname', () => {
         const user = new User(
             'email',
-            '','',
+            '','firstname',
             date
         );
         expect(user.isLastnameValid()).toBeFalsy();
+    })
+
+    it('should not validate empty firstname', () => {
+        const user = new User(
+            'email',
+            'lastname','',
+            date
+        );
         expect(user.isFirstnameValid()).toBeFalsy();
     })
 
-    it('should not validate names of white spaces', () => {
+    it('should not validate lastname full of white spaces', () => {
         const user = new User(
             'email',
-            '        ','        ',
+            '        ','firstname',
             date
         );
         expect(user.isLastnameValid()).toBeFalsy();
+    })
+
+    it('should not validate firstname full of white spaces', () => {
+        const user = new User(
+            'email',
+            'lastname','        ',
+            date
+        );
         expect(user.isFirstnameValid()).toBeFalsy();
     })
 });
 
 describe('birthdate', () => {
     const today: Date = new Date;
-    it('should validate birthdate', () => {
-        const twentyYearsAgo: Date = new Date();
-        twentyYearsAgo.setFullYear(today.getFullYear() - 20);
+    const twentyYearsAgo: Date = new Date();
+    twentyYearsAgo.setFullYear(today.getFullYear() - 20);
+    const tenYearsAgo: Date = new Date();
+    tenYearsAgo.setFullYear(today.getFullYear() - 10);
 
+    it('should validate birthdate', () => {
         const user = new User(
             'email',
             'lastname','firstname',
@@ -84,8 +110,7 @@ describe('birthdate', () => {
     })
 
     it('should not validate birthdate for user under 13 yo', () => {
-        const tenYearsAgo: Date = new Date();
-        tenYearsAgo.setFullYear(today.getFullYear() - 10);
+
         const user = new User(
             'email',
             'lastname','firstname',
@@ -115,5 +140,32 @@ describe('birthdate', () => {
             almostThirteenYearsAgo
         );
         expect(user.isBirthdateValid()).toBeFalsy();
+    })
+
+    it('should validate a correct user', () => {
+        const user = new User(
+            'test@mail.fr',
+            'lastname','firstname',
+            twentyYearsAgo
+        );
+        expect(user.isValid()).toBeTruthy();
+    })
+
+    it('should not validate a user with all wrong', () => {
+        const user = new User(
+            'bademail',
+            '','    ',
+            today
+        );
+        expect(user.isValid()).toBeFalsy();
+    })
+
+    it('should not validate a user with just email wrong', () => {
+        const user = new User(
+            'badmail',
+            'lastname','firstname',
+            twentyYearsAgo
+        );
+        expect(user.isValid()).toBeFalsy();
     })
 });

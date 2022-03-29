@@ -37,6 +37,9 @@ export class User {
     }
 
     public isValid() {
-        return false;
+        return  this.isEmailValid()
+            &&  this.isLastnameValid()
+            &&  this.isFirstnameValid()
+            &&  this.isBirthdateValid();
     }
 }
