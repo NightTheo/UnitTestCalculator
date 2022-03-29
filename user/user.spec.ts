@@ -1,7 +1,7 @@
 import {User} from "./user";
 
 describe('email', () => {
-    const date: Date = new Date;
+    const date: Date = new Date();
 
     it('should validate an email', () => {
         const user = new User(
