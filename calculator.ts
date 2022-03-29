@@ -1,6 +1,6 @@
 export class Calculator {
     add(a: number, b: number): number {
-        return 0;
+        return a + b;
     }
 
     sub(a: number, b: number): number {
