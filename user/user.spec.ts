@@ -141,6 +141,12 @@ describe('birthdate', () => {
         );
         expect(user.isBirthdateValid()).toBeFalsy();
     })
+});
+
+describe('isValid', () => {
+    const today: Date = new Date;
+    const twentyYearsAgo: Date = new Date();
+    twentyYearsAgo.setFullYear(today.getFullYear() - 20);
 
     it('should validate a correct user', () => {
         const user = new User(

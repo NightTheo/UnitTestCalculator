@@ -27,6 +27,11 @@ La classe Calculator doit contenir les méthodes :
 - div(a, b) : divise deux nombres
 - avg(tab) : fait la moyenne d'un tableau de nombres
 
+Cas limites:
+
+- On ne peut pas diviser par zéro.
+- La moyenne d'un tableau vide vaut 0.
+
 ### Utilisateur ###
 
 Le deuxième projet de tests est une suite de tests d'un utilisateur.
@@ -40,13 +45,13 @@ Pour cela j'ai choisi de créer les différentes méthodes :
 - isFirstnameValid() : vérifie que le prénom est renseigné
 - isBirthdateValid() : vérifie que l'utilisateur a plus de 13 ans
 
+Cas limites:
 
-## Implémentation ##
+- Le nom, prénom et email ne doivent pas être vide (white spaces inclus)
+- Un utilisateur qui vient d'avoir 13 ans est valide
+- Un utilisateur qui aura 13 ans demain n'est pas valide
+
+## Langage ##
 
 Cette calculatrice est faite en [TypeScript](https://www.typescriptlang.org/) avec le framework de test
 [Jest](https://jestjs.io/).
-
-Cas limites:
-
-- On ne peut pas diviser par zéro.
-- La moyenne d'un tableau vide vaut 0.
