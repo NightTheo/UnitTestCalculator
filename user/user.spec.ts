@@ -1,4 +1,5 @@
 import {User} from "./user";
+import {EmailValidator} from "./email.validator";
 
 describe('email', () => {
     const date: Date = new Date();
@@ -148,12 +149,21 @@ describe('isValid', () => {
     const twentyYearsAgo: Date = new Date();
     twentyYearsAgo.setFullYear(today.getFullYear() - 20);
 
+    const mockEmailValidator: EmailValidator = {
+        check: jest.fn().mockImplementation((email: string) => {
+            if(email.trim().length === 0 || email.indexOf('@') === -1) {
+                throw new Error('Bad email');
+            }
+        })
+    }
+
     it('should validate a correct user', () => {
         const user = new User(
             'test@mail.fr',
             'lastname','firstname',
             twentyYearsAgo
         );
+        user.emailValidator = mockEmailValidator;
         expect(user.isValid()).toBeTruthy();
     })
 
@@ -163,6 +173,7 @@ describe('isValid', () => {
             '','    ',
             today
         );
+        user.emailValidator = mockEmailValidator;
         expect(user.isValid()).toBeFalsy();
     })
 
@@ -172,6 +183,7 @@ describe('isValid', () => {
             'lastname','firstname',
             twentyYearsAgo
         );
+        user.emailValidator = mockEmailValidator;
         expect(user.isValid()).toBeFalsy();
     })
 });

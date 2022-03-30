@@ -1,8 +1,11 @@
+import {EmailValidator} from "./email.validator";
+
 export class User {
     email: string;
     lastname: string;
     firstname: string;
     birthdate: Date;
+    emailValidator: EmailValidator;
 
 
     constructor(email: string, lastname: string, firstname: string, birthdate: Date) {
@@ -37,8 +40,12 @@ export class User {
     }
 
     public isValid() {
-        return  this.isEmailValid()
-            &&  this.isLastnameValid()
+        try {
+            this.emailValidator.check(this.email);
+        } catch (e) {
+            return false;
+        }
+        return  this.isLastnameValid()
             &&  this.isFirstnameValid()
             &&  this.isBirthdateValid();
     }
