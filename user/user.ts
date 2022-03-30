@@ -31,9 +31,9 @@ export class User {
 
     isBirthdateValid(): boolean {
         const today: Date = new Date();
-        const thirteenYearsAndADayAgo: Date = new Date();
-        thirteenYearsAndADayAgo.setFullYear(today.getFullYear() - 13);
-        return this.birthdate <= thirteenYearsAndADayAgo;
+        const thirteenYearsAgo: Date = new Date();
+        thirteenYearsAgo.setFullYear(today.getFullYear() - 13);
+        return this.birthdate <= thirteenYearsAgo;
     }
 
     public isValid() {
