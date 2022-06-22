@@ -1,4 +1,5 @@
 import {EmailValidator} from "./email.validator";
+import {TodoList} from "../todo/todo-list";
 
 export class User {
     email: string;
@@ -6,6 +7,7 @@ export class User {
     firstname: string;
     birthdate: Date;
     emailValidator: EmailValidator;
+    todolist?: TodoList;
 
 
     constructor(email: string, lastname: string, firstname: string, birthdate: Date, emailValidator ?: EmailValidator) {
@@ -49,5 +51,11 @@ export class User {
         return  this.isLastnameValid()
             &&  this.isFirstnameValid()
             &&  this.isBirthdateValid();
+    }
+
+    public createNewToDoList() {
+        if(!this.isValid())
+            throw new Error();
+        this.todolist = new TodoList();
     }
 }

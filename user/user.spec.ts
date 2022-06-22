@@ -140,3 +140,20 @@ describe('isValid', () => {
         expect(goodUser.isValid()).toBeFalsy();
     })
 });
+
+describe('todo list', () => {
+    let goodUser: User;
+    beforeEach(() => {
+        goodUser = new User('good@email.org', 'lastname', 'firstname', new Date())
+    });
+
+    it('should create a new todolist', ()=> {
+        goodUser.createNewToDoList()
+        expect(goodUser.todolist).not.toBeFalsy();
+    })
+
+    it('should throw error if user is invalid', () => {
+        goodUser.email = ''
+        expect(() => goodUser.createNewToDoList()).toThrow(Error)
+    })
+})
