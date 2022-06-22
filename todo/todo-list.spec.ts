@@ -40,4 +40,9 @@ describe('todo list', ()=>{
         item.content = Array(1002).join('a'); // string of 1001 'a'
         expect(() => emptyTodo.add(item)).toThrow(Error)
     })
+
+    it('should not add item before 30 mins after the last one', ()=>{
+        emptyTodo.add(item);
+        expect(() => emptyTodo.add(new BasicItem('name2', 'content'))).toThrow(Error)
+    })
 })
