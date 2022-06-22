@@ -90,8 +90,7 @@ describe('password', ()=> {
     })
 
     it('should not validate password of 41', ()=> {
-        goodUser.password = Array(42).join('a');
-        console.log(goodUser.password.length)
+        goodUser.password = Array(42).join('a'); // string of 41 'a'
         expect(goodUser.isPasswordValid()).toBeFalsy()
     })
 })

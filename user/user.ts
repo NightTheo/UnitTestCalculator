@@ -43,12 +43,14 @@ export class User {
         }
         return  this.isLastnameValid()
             &&  this.isFirstnameValid()
-            &&  this.isBirthdateValid();
+            &&  this.isBirthdateValid()
+            &&  this.isPasswordValid();
     }
 
     public createNewToDoList() {
         const hasAlreadyToDoList = this.todolist != null;
-        if(!this.isValid() || hasAlreadyToDoList) throw new Error();
+        if(hasAlreadyToDoList) throw new Error("User has already created a To Do List.");
+        if(!this.isValid()) throw new Error("User is not valid for create a To Do List.");
         this.todolist = new TodoList();
     }
 
