@@ -127,4 +127,9 @@ describe('todo list', () => {
         goodUser.firstname = ''
         expect(() => goodUser.createNewToDoList()).toThrow(Error)
     })
+
+    it('should throw error if user has already a todolist', () => {
+        goodUser.createNewToDoList();
+        expect(() => goodUser.createNewToDoList()).toThrow(Error)
+    })
 })

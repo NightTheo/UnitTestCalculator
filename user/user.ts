@@ -7,7 +7,7 @@ export class User {
     firstname: string;
     birthdate: Date;
     emailValidator: EmailValidator;
-    todolist?: TodoList;
+    todolist: TodoList = null;
     password: string;
 
 
@@ -47,8 +47,8 @@ export class User {
     }
 
     public createNewToDoList() {
-        if(!this.isValid())
-            throw new Error();
+        const hasAlreadyToDoList = this.todolist != null;
+        if(!this.isValid() || hasAlreadyToDoList) throw new Error();
         this.todolist = new TodoList();
     }
 
