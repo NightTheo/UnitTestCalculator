@@ -8,12 +8,14 @@ export class User {
     birthdate: Date;
     emailValidator: EmailValidator;
     todolist?: TodoList;
+    password: string;
 
 
-    constructor(email: string, lastname: string, firstname: string, birthdate: Date, emailValidator ?: EmailValidator) {
+    constructor(email: string, lastname: string, firstname: string, password: string, birthdate: Date, emailValidator ?: EmailValidator) {
         this.email = email;
         this.lastname = lastname;
         this.firstname = firstname;
+        this.password = password;
         this.birthdate = birthdate;
         this.emailValidator = emailValidator;
     }
@@ -48,5 +50,10 @@ export class User {
         if(!this.isValid())
             throw new Error();
         this.todolist = new TodoList();
+    }
+
+    isPasswordValid() {
+        const length = this.password.length;
+        return length >= 8 && length <= 40;
     }
 }

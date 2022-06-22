@@ -8,7 +8,13 @@ let goodUser: User;
 let mockEmailValidator: EmailValidator;
 beforeEach(() => {
     mockEmailValidator = {check: jest.fn()}
-    goodUser = new User('good@email.org', 'lastname', 'firstname', twentyYearsAgo, mockEmailValidator)
+    goodUser = new User(
+        'good@email.org',
+        'lastname',
+        'firstname',
+        'myVerySecurePassword',
+        twentyYearsAgo,
+        mockEmailValidator)
 });
 
 describe('names', () => {
@@ -71,6 +77,24 @@ describe('birthdate', () => {
         expect(goodUser.isBirthdateValid()).toBeFalsy();
     })
 });
+
+
+describe('password', ()=> {
+    it('should validate password', ()=> {
+        expect(goodUser.isPasswordValid()).toBeTruthy()
+    })
+
+    it('should not validate password of 7', ()=> {
+        goodUser.password = '1234567'
+        expect(goodUser.isPasswordValid()).toBeFalsy()
+    })
+
+    it('should not validate password of 41', ()=> {
+        goodUser.password = Array(42).join('a');
+        console.log(goodUser.password.length)
+        expect(goodUser.isPasswordValid()).toBeFalsy()
+    })
+})
 
 describe('isValid', () => {
 
