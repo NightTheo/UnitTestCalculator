@@ -55,5 +55,5 @@ Cas limites:
 
 ## Langage ##
 
-Cette calculatrice est faite en [TypeScript](https://www.typescriptlang.org/) avec le framework de test
+Ces exercices sont codés en [TypeScript](https://www.typescriptlang.org/) avec le framework de test
 [Jest](https://jestjs.io/).

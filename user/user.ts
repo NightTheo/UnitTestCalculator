@@ -8,11 +8,12 @@ export class User {
     emailValidator: EmailValidator;
 
 
-    constructor(email: string, lastname: string, firstname: string, birthdate: Date) {
+    constructor(email: string, lastname: string, firstname: string, birthdate: Date, emailValidator ?: EmailValidator) {
         this.email = email;
         this.lastname = lastname;
         this.firstname = firstname;
         this.birthdate = birthdate;
+        this.emailValidator = emailValidator;
     }
 
     isEmailValid(): boolean {

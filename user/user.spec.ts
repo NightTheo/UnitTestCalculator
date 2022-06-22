@@ -39,58 +39,37 @@ describe('email', () => {
 
 describe('names', () => {
     const date: Date = new Date;
+    let goodUser: User;
+    beforeEach(() => {
+        goodUser = new User('good@email.org', 'lastname', 'firstname', new Date())
+    });
+
     it('should validate lastname', () => {
-        const user = new User(
-            'email',
-            'lastname','firstname',
-            date
-        );
-        expect(user.isLastnameValid()).toBeTruthy();
+        expect(goodUser.isLastnameValid()).toBeTruthy();
     })
 
     it('should validate firstname', () => {
-        const user = new User(
-            'email',
-            'lastname','firstname',
-            date
-        );
-        expect(user.isFirstnameValid()).toBeTruthy();
+        expect(goodUser.isFirstnameValid()).toBeTruthy();
     })
 
     it('should not validate empty lastname', () => {
-        const user = new User(
-            'email',
-            '','firstname',
-            date
-        );
-        expect(user.isLastnameValid()).toBeFalsy();
+        goodUser.lastname = '';
+        expect(goodUser.isLastnameValid()).toBeFalsy();
     })
 
     it('should not validate empty firstname', () => {
-        const user = new User(
-            'email',
-            'lastname','',
-            date
-        );
-        expect(user.isFirstnameValid()).toBeFalsy();
+        goodUser.firstname = '';
+        expect(goodUser.isFirstnameValid()).toBeFalsy();
     })
 
     it('should not validate lastname full of white spaces', () => {
-        const user = new User(
-            'email',
-            '        ','firstname',
-            date
-        );
-        expect(user.isLastnameValid()).toBeFalsy();
+        goodUser.lastname = '        ';
+        expect(goodUser.isLastnameValid()).toBeFalsy();
     })
 
     it('should not validate firstname full of white spaces', () => {
-        const user = new User(
-            'email',
-            'lastname','        ',
-            date
-        );
-        expect(user.isFirstnameValid()).toBeFalsy();
+        goodUser.firstname = '        ';
+        expect(goodUser.isFirstnameValid()).toBeFalsy();
     })
 });
 
@@ -100,90 +79,64 @@ describe('birthdate', () => {
     twentyYearsAgo.setFullYear(today.getFullYear() - 20);
     const tenYearsAgo: Date = new Date();
     tenYearsAgo.setFullYear(today.getFullYear() - 10);
+    const thirteenYearsAgo: Date = new Date();
+    thirteenYearsAgo.setFullYear(today.getFullYear() - 13);
+
+    let goodUser: User;
+    beforeEach(() => {
+        goodUser = new User('good@email.org', 'lastname', 'firstname', twentyYearsAgo)
+    });
 
     it('should validate birthdate', () => {
-        const user = new User(
-            'email',
-            'lastname','firstname',
-            twentyYearsAgo
-        );
-        expect(user.isBirthdateValid()).toBeTruthy();
+        expect(goodUser.isBirthdateValid()).toBeTruthy();
     })
 
     it('should not validate birthdate for user under 13 yo', () => {
-
-        const user = new User(
-            'email',
-            'lastname','firstname',
-            tenYearsAgo
-        );
-        expect(user.isBirthdateValid()).toBeFalsy();
+        goodUser.birthdate = tenYearsAgo;
+        expect(goodUser.isBirthdateValid()).toBeFalsy();
     })
 
     it('should validate birthdate for user who have 13 yo today !', () => {
-        const thirteenYearsAgo: Date = new Date();
-        thirteenYearsAgo.setFullYear(today.getFullYear() - 13);
-        const user = new User(
-            'email',
-            'lastname','firstname',
-            thirteenYearsAgo
-        );
-        expect(user.isBirthdateValid()).toBeTruthy();
+        goodUser.birthdate = thirteenYearsAgo;
+        expect(goodUser.isBirthdateValid()).toBeTruthy();
     })
 
     it('should not validate birthdate for user who have 13 yo tomorrow !', () => {
         const almostThirteenYearsAgo: Date = new Date();
-        almostThirteenYearsAgo.setFullYear(today.getFullYear() - 13);
+        almostThirteenYearsAgo.setFullYear(thirteenYearsAgo.getFullYear());
         almostThirteenYearsAgo.setDate(today.getDate() + 1);
-        const user = new User(
-            'email',
-            'lastname','firstname',
-            almostThirteenYearsAgo
-        );
-        expect(user.isBirthdateValid()).toBeFalsy();
+        goodUser.birthdate = almostThirteenYearsAgo;
+        expect(goodUser.isBirthdateValid()).toBeFalsy();
     })
 });
 
 describe('isValid', () => {
-    const today: Date = new Date;
-    const twentyYearsAgo: Date = new Date();
-    twentyYearsAgo.setFullYear(today.getFullYear() - 20);
 
     const mockEmailValidator: EmailValidator = {
-        check: jest.fn().mockImplementation((email: string) => {
-            if(email.trim().length === 0 || email.indexOf('@') === -1) {
-                throw new Error('Bad email');
-            }
-        })
+        check: jest.fn()
     }
 
+    const twentyYearsAgo: Date = new Date();
+    twentyYearsAgo.setFullYear(new Date().getFullYear() - 20);
+    let goodUser: User;
+    beforeEach(() => {
+        goodUser = new User('good@email.org', 'lastname', 'firstname', twentyYearsAgo, mockEmailValidator)
+    });
+
     it('should validate a correct user', () => {
-        const user = new User(
-            'test@mail.fr',
-            'lastname','firstname',
-            twentyYearsAgo
-        );
-        user.emailValidator = mockEmailValidator;
-        expect(user.isValid()).toBeTruthy();
+        expect(goodUser.isValid()).toBeTruthy();
     })
 
     it('should not validate a user with all wrong', () => {
-        const user = new User(
-            'bademail',
-            '','    ',
-            today
-        );
-        user.emailValidator = mockEmailValidator;
-        expect(user.isValid()).toBeFalsy();
+        goodUser.email = 'bad_email';
+        goodUser.lastname = '';
+        goodUser.firstname = '    ';
+        goodUser.birthdate = new Date(); // born today
+        expect(goodUser.isValid()).toBeFalsy();
     })
 
-    it('should not validate a user with just email wrong', () => {
-        const user = new User(
-            'badmail',
-            'lastname','firstname',
-            twentyYearsAgo
-        );
-        user.emailValidator = mockEmailValidator;
-        expect(user.isValid()).toBeFalsy();
+    it('should not validate a user with bad email', () => {
+        mockEmailValidator.check = jest.fn().mockImplementation(()=> {throw new Error('Bad email');})
+        expect(goodUser.isValid()).toBeFalsy();
     })
 });
