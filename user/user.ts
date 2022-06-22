@@ -18,15 +18,6 @@ export class User {
         this.emailValidator = emailValidator;
     }
 
-    isEmailValid(): boolean {
-        const match: RegExpMatchArray = String(this.email)
-            .toLowerCase()
-            .match(
-                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-            );
-        return !!match;
-    }
-
     isLastnameValid(): boolean {
         return this.lastname.trim().length > 0;
     }

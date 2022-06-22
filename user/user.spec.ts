@@ -1,48 +1,17 @@
 import {User} from "./user";
 import {EmailValidator} from "./email.validator";
 
-describe('email', () => {
-    const date: Date = new Date();
+const twentyYearsAgo: Date = new Date();
+twentyYearsAgo.setFullYear(new Date().getFullYear() - 20);
 
-    it('should validate an email', () => {
-        const user = new User(
-            'email.test@mail.fr',
-            'lname','fname',date
-        );
-        expect(user.isEmailValid()).toBeTruthy();
-    })
-
-    it('should not validate a bad email', () => {
-        const user = new User(
-            'bademail',
-            'lname','fname',date
-        );
-        expect(user.isEmailValid()).toBeFalsy();
-    })
-
-    it('should not validate empty email', () => {
-        const user = new User(
-            '',
-            'lname','fname',date
-        );
-        expect(user.isEmailValid()).toBeFalsy();
-    })
-
-    it('should not validate email with white spaces around', () => {
-        const user = new User(
-            '       email.test@mail.fr          ',
-            'lname','fname',date
-        );
-        expect(user.isEmailValid()).toBeFalsy();
-    })
+let goodUser: User;
+let mockEmailValidator: EmailValidator;
+beforeEach(() => {
+    mockEmailValidator = {check: jest.fn()}
+    goodUser = new User('good@email.org', 'lastname', 'firstname', twentyYearsAgo, mockEmailValidator)
 });
 
 describe('names', () => {
-    const date: Date = new Date;
-    let goodUser: User;
-    beforeEach(() => {
-        goodUser = new User('good@email.org', 'lastname', 'firstname', new Date())
-    });
 
     it('should validate lastname', () => {
         expect(goodUser.isLastnameValid()).toBeTruthy();
@@ -75,17 +44,10 @@ describe('names', () => {
 
 describe('birthdate', () => {
     const today: Date = new Date;
-    const twentyYearsAgo: Date = new Date();
-    twentyYearsAgo.setFullYear(today.getFullYear() - 20);
     const tenYearsAgo: Date = new Date();
     tenYearsAgo.setFullYear(today.getFullYear() - 10);
     const thirteenYearsAgo: Date = new Date();
     thirteenYearsAgo.setFullYear(today.getFullYear() - 13);
-
-    let goodUser: User;
-    beforeEach(() => {
-        goodUser = new User('good@email.org', 'lastname', 'firstname', twentyYearsAgo)
-    });
 
     it('should validate birthdate', () => {
         expect(goodUser.isBirthdateValid()).toBeTruthy();
@@ -112,17 +74,6 @@ describe('birthdate', () => {
 
 describe('isValid', () => {
 
-    const mockEmailValidator: EmailValidator = {
-        check: jest.fn()
-    }
-
-    const twentyYearsAgo: Date = new Date();
-    twentyYearsAgo.setFullYear(new Date().getFullYear() - 20);
-    let goodUser: User;
-    beforeEach(() => {
-        goodUser = new User('good@email.org', 'lastname', 'firstname', twentyYearsAgo, mockEmailValidator)
-    });
-
     it('should validate a correct user', () => {
         expect(goodUser.isValid()).toBeTruthy();
     })
@@ -142,10 +93,6 @@ describe('isValid', () => {
 });
 
 describe('todo list', () => {
-    let goodUser: User;
-    beforeEach(() => {
-        goodUser = new User('good@email.org', 'lastname', 'firstname', new Date())
-    });
 
     it('should create a new todolist', ()=> {
         goodUser.createNewToDoList()
@@ -153,7 +100,7 @@ describe('todo list', () => {
     })
 
     it('should throw error if user is invalid', () => {
-        goodUser.email = ''
+        goodUser.firstname = ''
         expect(() => goodUser.createNewToDoList()).toThrow(Error)
     })
 })
