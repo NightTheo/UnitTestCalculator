@@ -1,27 +1,28 @@
 import {Item} from "./item";
-import {DateUtils} from "../utils/date.utils";
-import {User} from "../user/user";
-
-export interface DateComparator {
-    getMinutesBetweenTwoDates(d1: Date, d2: Date);
-}
-
+import {DateComparator} from "../date_comparator/date-comparator";
+import {EmailSenderService} from "../email_sender/email-sender.service";
 
 export class TodoList {
     private readonly CAPACITY = 10;
     items: Item[] = []
     private dateOfLastAddItem: Date = null;
     private readonly dateComparator: DateComparator;
+    private readonly emailSenderService:  EmailSenderService;
 
 
-    constructor(dateComparator: DateComparator) {
+    constructor(
+        dateComparator: DateComparator,
+        emailSenderService: EmailSenderService
+    ) {
         this.dateComparator = dateComparator;
+        this.emailSenderService = emailSenderService
     }
 
     add(item: Item) {
         this.checkCanAdd(item);
         this.items.push(item)
         this.dateOfLastAddItem = new Date();
+        if(this.items.length === 8) this.emailSenderService.send()
     }
 
     private checkCanAdd(item: Item) {
@@ -29,7 +30,7 @@ export class TodoList {
         if(this.isFull()) throw new Error('To Do List is already full.');
         if(this.alreadyContains(item)) throw new Error(`Item ${item.name} already in To Do List`);
 
-        if(item.content.length > 1000) throw new Error("Item content is too long.") // TODO move it in item
+        if(item.content.length > 1000) throw new Error("Item content is too long.")
     }
 
     private waitedLongEnough(): boolean {

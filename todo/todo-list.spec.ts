@@ -1,15 +1,19 @@
-import {DateComparator, TodoList} from "./todo-list";
 import {BasicItem} from "./basic-item";
 import {Item} from "./item";
+import {DateComparator} from "../date_comparator/date-comparator";
+import {TodoList} from "./todo-list";
+import {EmailSenderService} from "../email_sender/email-sender.service";
 
 let emptyTodo: TodoList;
 let item: Item;
 let mockDateComparator: DateComparator;
+let mockEmailSenderService: EmailSenderService;
 const MINUTES_BETWEEN_TWO_DATES = 40;
 
 beforeEach(()=> {
     mockDateComparator = {getMinutesBetweenTwoDates: jest.fn().mockReturnValue(MINUTES_BETWEEN_TWO_DATES)}
-    emptyTodo = new TodoList(mockDateComparator);
+    mockEmailSenderService = {send: jest.fn()}
+    emptyTodo = new TodoList(mockDateComparator, mockEmailSenderService);
     item = new BasicItem('name', 'content')
 })
 
@@ -45,8 +49,25 @@ describe('todo list', ()=>{
     })
 
     it('should not add item before 30 mins since the last one', ()=>{
-        mockDateComparator.getMinutesBetweenTwoDates = jest.fn().mockResolvedValue(10)
+        mockDateComparator.getMinutesBetweenTwoDates = jest.fn().mockReturnValue(30)
         emptyTodo.add(item);
         expect(() => emptyTodo.add(new BasicItem('name2', 'content'))).toThrow(Error)
+    })
+
+    it('should send an email at the 8th item added', ()=>{
+        for (let i = 1 ; i <= 7 ; i += 1){
+            const uniqueNameItem = new BasicItem(`name${i}`, 'content');
+            emptyTodo.add(uniqueNameItem)
+        }
+        expect(mockEmailSenderService.send).not.toHaveBeenCalled();
+
+        emptyTodo.add(new BasicItem('8th', 'content'));
+        expect(mockEmailSenderService.send).toHaveBeenCalledTimes(1);
+
+        for (let i = 9 ; i <= 10 ; i += 1){
+            const uniqueNameItem = new BasicItem(`name${i}`, 'content');
+            emptyTodo.add(uniqueNameItem)
+        }
+        expect(mockEmailSenderService.send).toHaveBeenCalledTimes(1);
     })
 })

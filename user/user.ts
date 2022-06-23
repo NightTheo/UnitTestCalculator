@@ -1,11 +1,7 @@
 import {EmailValidator} from "./email.validator";
-import {DateComparator, TodoList} from "../todo/todo-list";
-
-class SimpleDateComparator implements DateComparator {
-    getMinutesBetweenTwoDates(d1: Date, d2: Date) {
-        return 40;
-    }
-}
+import {TodoList} from "../todo/todo-list";
+import {SimpleDateComparator} from "../date_comparator/simple.date-comparator";
+import {SengridEmailSenderService} from "../email_sender/simple.email-sender.service";
 
 export class User {
     email: string;
@@ -53,7 +49,10 @@ export class User {
         const hasAlreadyToDoList = this.todolist != null;
         if(hasAlreadyToDoList) throw new Error("User has already created a To Do List.");
         if(!this.isValid()) throw new Error("User is not valid for create a To Do List.");
-        this.todolist = new TodoList(new SimpleDateComparator());
+        this.todolist = new TodoList(
+            new SimpleDateComparator(),
+            new SengridEmailSenderService()
+        );
     }
 
     isPasswordValid() {
