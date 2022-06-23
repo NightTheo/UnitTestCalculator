@@ -1,5 +1,11 @@
 import {EmailValidator} from "./email.validator";
-import {TodoList} from "../todo/todo-list";
+import {DateComparator, TodoList} from "../todo/todo-list";
+
+class SimpleDateComparator implements DateComparator {
+    getMinutesBetweenTwoDates(d1: Date, d2: Date) {
+        return 40;
+    }
+}
 
 export class User {
     email: string;
@@ -35,13 +41,9 @@ export class User {
         return this.birthdate <= thirteenYearsAgo;
     }
 
-    public isValid() {
-        try {
-            this.emailValidator.check(this.email);
-        } catch (e) {
-            return false;
-        }
-        return  this.isLastnameValid()
+    public isValid(): boolean {
+        return  this.isEmailValid()
+            &&  this.isLastnameValid()
             &&  this.isFirstnameValid()
             &&  this.isBirthdateValid()
             &&  this.isPasswordValid();
@@ -51,11 +53,20 @@ export class User {
         const hasAlreadyToDoList = this.todolist != null;
         if(hasAlreadyToDoList) throw new Error("User has already created a To Do List.");
         if(!this.isValid()) throw new Error("User is not valid for create a To Do List.");
-        this.todolist = new TodoList();
+        this.todolist = new TodoList(new SimpleDateComparator());
     }
 
     isPasswordValid() {
         const length = this.password.length;
         return length >= 8 && length <= 40;
+    }
+
+    private isEmailValid(): boolean {
+        try {
+            this.emailValidator.check(this.email);
+            return true;
+        } catch{
+            return false;
+        }
     }
 }

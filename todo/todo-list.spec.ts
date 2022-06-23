@@ -1,12 +1,15 @@
-import {TodoList} from "./todo-list";
+import {DateComparator, TodoList} from "./todo-list";
 import {BasicItem} from "./basic-item";
 import {Item} from "./item";
 
 let emptyTodo: TodoList;
 let item: Item;
+let mockDateComparator: DateComparator;
+const MINUTES_BETWEEN_TWO_DATES = 40;
 
 beforeEach(()=> {
-    emptyTodo = new TodoList();
+    mockDateComparator = {getMinutesBetweenTwoDates: jest.fn().mockReturnValue(MINUTES_BETWEEN_TWO_DATES)}
+    emptyTodo = new TodoList(mockDateComparator);
     item = new BasicItem('name', 'content')
 })
 
@@ -41,7 +44,8 @@ describe('todo list', ()=>{
         expect(() => emptyTodo.add(item)).toThrow(Error)
     })
 
-    it('should not add item before 30 mins after the last one', ()=>{
+    it('should not add item before 30 mins since the last one', ()=>{
+        mockDateComparator.getMinutesBetweenTwoDates = jest.fn().mockResolvedValue(10)
         emptyTodo.add(item);
         expect(() => emptyTodo.add(new BasicItem('name2', 'content'))).toThrow(Error)
     })
