@@ -4,8 +4,11 @@ import {EmailSenderService} from "../email_sender/email-sender.service";
 import {User} from "../user/user";
 
 export class TodoList {
-    private readonly CAPACITY = 10;
-    private readonly NOTIFICATION_BEARING = 8;
+    private static readonly CAPACITY = 10;
+    private static readonly NOTIFICATION_BEARING = 8;
+    private static readonly MINIMUM_MINUTES_BETWEEN_TOW_ADD = 30;
+    private static readonly MAX_SIZE_ITEM_CONTENT = 1000;
+
     items: Item[] = []
     private dateOfLastAddItem: Date = null;
 
@@ -19,10 +22,10 @@ export class TodoList {
         this.checkCanAdd(item);
         this.items.push(item)
         this.dateOfLastAddItem = new Date();
-        if(this.items.length === this.NOTIFICATION_BEARING)
+        if(this.items.length === TodoList.NOTIFICATION_BEARING)
             this.emailSenderService.send(
                 this.creator.email,
-                `You only have ${this.CAPACITY - this.NOTIFICATION_BEARING} items remaining in your ToDo List.`
+                `You only have ${TodoList.CAPACITY - TodoList.NOTIFICATION_BEARING} empty slots remaining in your ToDo List.`
             )
     }
 
@@ -37,17 +40,17 @@ export class TodoList {
         const isFirstAdd = this.dateOfLastAddItem == null;
         if(isFirstAdd) return true;
         const minutesSinceLastAdd = this.dateComparator.getMinutesBetweenTwoDates(new Date(), this.dateOfLastAddItem);
-        return minutesSinceLastAdd > 30;
+        return minutesSinceLastAdd > TodoList.MINIMUM_MINUTES_BETWEEN_TOW_ADD;
     }
 
     private isFull(): boolean {
-        return this.items.length >= this.CAPACITY;
+        return this.items.length >= TodoList.CAPACITY;
     }
 
     private alreadyContains(item: Item): boolean {
         return this.items.filter(i => i.equals(item)).length > 0;
     }
     private itemContentIsTooLong(item: Item) {
-        return item.content.length > 1000;
+        return item.content.length > TodoList.MAX_SIZE_ITEM_CONTENT;
     }
 }

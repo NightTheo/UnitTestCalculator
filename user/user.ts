@@ -5,6 +5,7 @@ import {SengridEmailSenderService} from "../email_sender/sengrid.email-sender.se
 
 export class User {
     todolist: TodoList = null;
+    private static readonly MINIMUM_VALID_AGE = 13;
 
     constructor(
         public email: string,
@@ -15,27 +16,27 @@ export class User {
         public emailValidator ?: EmailValidator
     ) {}
 
-    isLastnameValid(): boolean {
+    lastnameIsValid(): boolean {
         return this.lastname.trim().length > 0;
     }
 
-    isFirstnameValid(): boolean {
+    firstnameIsValid(): boolean {
         return this.firstname.trim().length > 0;
     }
 
-    isBirthdateValid(): boolean {
+    isOldEnough(): boolean {
         const today: Date = new Date();
         const thirteenYearsAgo: Date = new Date();
-        thirteenYearsAgo.setFullYear(today.getFullYear() - 13);
+        thirteenYearsAgo.setFullYear(today.getFullYear() - User.MINIMUM_VALID_AGE);
         return this.birthdate <= thirteenYearsAgo;
     }
 
     public isValid(): boolean {
-        return  this.isEmailValid()
-            &&  this.isLastnameValid()
-            &&  this.isFirstnameValid()
-            &&  this.isBirthdateValid()
-            &&  this.isPasswordValid();
+        return  this.emailIsValid()
+            &&  this.lastnameIsValid()
+            &&  this.firstnameIsValid()
+            &&  this.isOldEnough()
+            &&  this.passwordIsValid();
     }
 
     public createNewToDoList() {
@@ -49,12 +50,12 @@ export class User {
         );
     }
 
-    isPasswordValid() {
+    passwordIsValid() {
         const length = this.password.length;
         return length >= 8 && length <= 40;
     }
 
-    private isEmailValid(): boolean {
+    private emailIsValid(): boolean {
         try {
             this.emailValidator.check(this.email);
             return true;

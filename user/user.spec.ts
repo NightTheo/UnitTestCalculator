@@ -20,31 +20,31 @@ beforeEach(() => {
 describe('names', () => {
 
     it('should validate lastname', () => {
-        expect(goodUser.isLastnameValid()).toBeTruthy();
+        expect(goodUser.lastnameIsValid()).toBeTruthy();
     })
 
     it('should validate firstname', () => {
-        expect(goodUser.isFirstnameValid()).toBeTruthy();
+        expect(goodUser.firstnameIsValid()).toBeTruthy();
     })
 
     it('should not validate empty lastname', () => {
         goodUser.lastname = '';
-        expect(goodUser.isLastnameValid()).toBeFalsy();
+        expect(goodUser.lastnameIsValid()).toBeFalsy();
     })
 
     it('should not validate empty firstname', () => {
         goodUser.firstname = '';
-        expect(goodUser.isFirstnameValid()).toBeFalsy();
+        expect(goodUser.firstnameIsValid()).toBeFalsy();
     })
 
     it('should not validate lastname full of white spaces', () => {
         goodUser.lastname = '        ';
-        expect(goodUser.isLastnameValid()).toBeFalsy();
+        expect(goodUser.lastnameIsValid()).toBeFalsy();
     })
 
     it('should not validate firstname full of white spaces', () => {
         goodUser.firstname = '        ';
-        expect(goodUser.isFirstnameValid()).toBeFalsy();
+        expect(goodUser.firstnameIsValid()).toBeFalsy();
     })
 });
 
@@ -56,17 +56,17 @@ describe('birthdate', () => {
     thirteenYearsAgo.setFullYear(today.getFullYear() - 13);
 
     it('should validate birthdate', () => {
-        expect(goodUser.isBirthdateValid()).toBeTruthy();
+        expect(goodUser.isOldEnough()).toBeTruthy();
     })
 
     it('should not validate birthdate for user under 13 yo', () => {
         goodUser.birthdate = tenYearsAgo;
-        expect(goodUser.isBirthdateValid()).toBeFalsy();
+        expect(goodUser.isOldEnough()).toBeFalsy();
     })
 
     it('should validate birthdate for user who have 13 yo today !', () => {
         goodUser.birthdate = thirteenYearsAgo;
-        expect(goodUser.isBirthdateValid()).toBeTruthy();
+        expect(goodUser.isOldEnough()).toBeTruthy();
     })
 
     it('should not validate birthdate for user who have 13 yo tomorrow !', () => {
@@ -74,24 +74,24 @@ describe('birthdate', () => {
         almostThirteenYearsAgo.setFullYear(thirteenYearsAgo.getFullYear());
         almostThirteenYearsAgo.setDate(today.getDate() + 1);
         goodUser.birthdate = almostThirteenYearsAgo;
-        expect(goodUser.isBirthdateValid()).toBeFalsy();
+        expect(goodUser.isOldEnough()).toBeFalsy();
     })
 });
 
 
 describe('password', ()=> {
     it('should validate password', ()=> {
-        expect(goodUser.isPasswordValid()).toBeTruthy()
+        expect(goodUser.passwordIsValid()).toBeTruthy()
     })
 
     it('should not validate password of 7', ()=> {
         goodUser.password = '1234567'
-        expect(goodUser.isPasswordValid()).toBeFalsy()
+        expect(goodUser.passwordIsValid()).toBeFalsy()
     })
 
     it('should not validate password of 41', ()=> {
         goodUser.password = Array(42).join('a'); // string of 41 'a'
-        expect(goodUser.isPasswordValid()).toBeFalsy()
+        expect(goodUser.passwordIsValid()).toBeFalsy()
     })
 })
 

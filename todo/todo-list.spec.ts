@@ -6,17 +6,22 @@ import {EmailSenderService} from "../email_sender/email-sender.service";
 import {User} from "../user/user";
 
 let emptyTodo: TodoList;
+let todoWithSevenItems: TodoList;
 let user: User;
 let item: Item;
+
 let mockDateComparator: DateComparator;
 let mockEmailSenderService: EmailSenderService;
-const MINUTES_BETWEEN_TWO_DATES = 40;
+const MOCK_MINUTES_BETWEEN_TWO_DATES = 40;
 
 beforeEach(()=> {
-    mockDateComparator = {getMinutesBetweenTwoDates: jest.fn().mockReturnValue(MINUTES_BETWEEN_TWO_DATES)}
+    mockDateComparator = {getMinutesBetweenTwoDates: jest.fn().mockReturnValue(MOCK_MINUTES_BETWEEN_TWO_DATES)}
     mockEmailSenderService = {send: jest.fn()}
     user = new User('user@email.ex', '', '', '', new Date())
     emptyTodo = new TodoList(mockDateComparator, mockEmailSenderService, user);
+    todoWithSevenItems = new TodoList(mockDateComparator, mockEmailSenderService, user)
+    Array.from(Array(7).keys())
+        .forEach(i => todoWithSevenItems.add(new BasicItem(`name${i}`, 'content')));
     item = new BasicItem('name', 'content')
 })
 
@@ -58,26 +63,28 @@ describe('todo list', ()=>{
     })
 
     it('should send an email at the 8th item added', ()=>{
-        for (let i = 1 ; i <= 7 ; i += 1){
-            const uniqueNameItem = new BasicItem(`name${i}`, 'content');
-            emptyTodo.add(uniqueNameItem)
-        }
         expect(mockEmailSenderService.send).not.toHaveBeenCalled();
 
-        emptyTodo.add(new BasicItem('8th', 'content'));
+        todoWithSevenItems.add(new BasicItem('8th', 'content'));
         expect(mockEmailSenderService.send).toHaveBeenCalledTimes(1);
 
         for (let i = 9 ; i <= 10 ; i += 1){
             const uniqueNameItem = new BasicItem(`name${i}`, 'content');
-            emptyTodo.add(uniqueNameItem)
+            todoWithSevenItems.add(uniqueNameItem)
         }
         expect(mockEmailSenderService.send).toHaveBeenCalledTimes(1);
     })
 
     it("should send an email to the To Do List's creator", () => {
-        Array.from(Array(10).keys())
-            .forEach(i => emptyTodo.add(new BasicItem(`name${i}`, 'content')));
-        expect(mockEmailSenderService.send)
-            .toHaveBeenCalledWith(user.email, 'You only have 2 items remaining in your ToDo List.');
+        todoWithSevenItems.add(item)
+        expect(mockEmailSenderService.send).toHaveBeenCalledWith(user.email, expect.any(String));
+    })
+
+    it("should send an email saying that only two slots are available in list", () => {
+        todoWithSevenItems.add(item)
+        expect(mockEmailSenderService.send).toHaveBeenCalledWith(
+            expect.any(String),
+            'You only have 2 empty slots remaining in your ToDo List.'
+        );
     })
 })
