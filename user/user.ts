@@ -1,26 +1,19 @@
 import {EmailValidator} from "./email.validator";
 import {TodoList} from "../todo/todo-list";
 import {SimpleDateComparator} from "../date_comparator/simple.date-comparator";
-import {SengridEmailSenderService} from "../email_sender/simple.email-sender.service";
+import {SengridEmailSenderService} from "../email_sender/sengrid.email-sender.service";
 
 export class User {
-    email: string;
-    lastname: string;
-    firstname: string;
-    birthdate: Date;
-    emailValidator: EmailValidator;
     todolist: TodoList = null;
-    password: string;
 
-
-    constructor(email: string, lastname: string, firstname: string, password: string, birthdate: Date, emailValidator ?: EmailValidator) {
-        this.email = email;
-        this.lastname = lastname;
-        this.firstname = firstname;
-        this.password = password;
-        this.birthdate = birthdate;
-        this.emailValidator = emailValidator;
-    }
+    constructor(
+        public email: string,
+        public lastname: string,
+        public firstname: string,
+        public password: string,
+        public birthdate: Date,
+        public emailValidator ?: EmailValidator
+    ) {}
 
     isLastnameValid(): boolean {
         return this.lastname.trim().length > 0;
@@ -51,7 +44,8 @@ export class User {
         if(!this.isValid()) throw new Error("User is not valid for create a To Do List.");
         this.todolist = new TodoList(
             new SimpleDateComparator(),
-            new SengridEmailSenderService()
+            new SengridEmailSenderService(),
+            this
         );
     }
 

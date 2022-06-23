@@ -1,3 +1,3 @@
 export interface EmailSenderService {
-    send()
+    send(recipient: string, message: string)
 }

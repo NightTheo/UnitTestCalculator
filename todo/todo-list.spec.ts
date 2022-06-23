@@ -3,8 +3,10 @@ import {Item} from "./item";
 import {DateComparator} from "../date_comparator/date-comparator";
 import {TodoList} from "./todo-list";
 import {EmailSenderService} from "../email_sender/email-sender.service";
+import {User} from "../user/user";
 
 let emptyTodo: TodoList;
+let user: User;
 let item: Item;
 let mockDateComparator: DateComparator;
 let mockEmailSenderService: EmailSenderService;
@@ -13,7 +15,8 @@ const MINUTES_BETWEEN_TWO_DATES = 40;
 beforeEach(()=> {
     mockDateComparator = {getMinutesBetweenTwoDates: jest.fn().mockReturnValue(MINUTES_BETWEEN_TWO_DATES)}
     mockEmailSenderService = {send: jest.fn()}
-    emptyTodo = new TodoList(mockDateComparator, mockEmailSenderService);
+    user = new User('user@email.ex', '', '', '', new Date())
+    emptyTodo = new TodoList(mockDateComparator, mockEmailSenderService, user);
     item = new BasicItem('name', 'content')
 })
 
@@ -69,5 +72,12 @@ describe('todo list', ()=>{
             emptyTodo.add(uniqueNameItem)
         }
         expect(mockEmailSenderService.send).toHaveBeenCalledTimes(1);
+    })
+
+    it("should send an email to the To Do List's creator", () => {
+        Array.from(Array(10).keys())
+            .forEach(i => emptyTodo.add(new BasicItem(`name${i}`, 'content')));
+        expect(mockEmailSenderService.send)
+            .toHaveBeenCalledWith(user.email, 'You only have 2 items remaining in your ToDo List.');
     })
 })
