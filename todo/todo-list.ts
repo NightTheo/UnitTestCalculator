@@ -1,4 +1,4 @@
-import {Item} from "./item";
+import {ConflictItemException, Item, ItemContentException} from "./item";
 import {DateComparator} from "../date_comparator/date-comparator";
 import {EmailSenderService} from "../email_sender/email-sender.service";
 import {User} from "../user/user";
@@ -30,10 +30,10 @@ export class TodoList {
     }
 
     private checkCanAdd(item: Item) {
-        if(!this.waitedLongEnough()) throw new Error("To soon to add an item");
-        if(this.isFull()) throw new Error('To Do List is already full.');
-        if(this.alreadyContains(item)) throw new Error(`Item ${item.name} already in To Do List`);
-        if(this.itemContentIsTooLong(item)) throw new Error("Item content is too long.")
+        if(!this.waitedLongEnough()) throw new TodoListException("To soon to add an item");
+        if(this.isFull()) throw new TodoListCapacityException('To Do List is already full.');
+        if(this.alreadyContains(item)) throw new ConflictItemException(`Item ${item.name} already in To Do List`);
+        if(this.itemContentIsTooLong(item)) throw new ItemContentException("Item content is too long.")
     }
 
     private waitedLongEnough(): boolean {
@@ -52,5 +52,36 @@ export class TodoList {
     }
     private itemContentIsTooLong(item: Item) {
         return item.content.length > TodoList.MAX_SIZE_ITEM_CONTENT;
+    }
+}
+
+export class TodoListException implements Error {
+    message: string;
+    name: string;
+
+    constructor(msg: string) {
+        this.name = 'TodoListException'
+        this.message = msg
+    }
+}
+
+export class TodoListCapacityException implements Error {
+    message: string;
+    name: string;
+
+    constructor(msg: string) {
+        this.name = 'TodoListCapacityException'
+        this.message = msg
+    }
+}
+
+
+export class ConflictTodoListException implements Error {
+    message: string;
+    name: string;
+
+    constructor(msg: string) {
+        this.name = 'ConflictTodoListException'
+        this.message = msg
     }
 }

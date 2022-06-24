@@ -1,3 +1,3 @@
 export interface EmailValidator {
-    check(email: string): void;
+    check(email: string): void | never;
 }

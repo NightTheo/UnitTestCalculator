@@ -1,5 +1,5 @@
 {
-  "name": "unittestcalculator",
+  "name": "unit-tests-3al-2021",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/NightTheo/UnitTestCalculator.git"
+    "url": "git+https://github.com/NightTheo/UnitTests3AL2021.git"
   },
   "author": "NightTheo",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/NightTheo/UnitTestCalculator/issues"
+    "url": "https://github.com/NightTheo/UnitTests3AL2021/issues"
   },
-  "homepage": "https://github.com/NightTheo/UnitTestCalculator#readme",
+  "homepage": "https://github.com/NightTheo/UnitTests3AL2021#readme",
   "devDependencies": {
     "@types/jest": "^27.4.1",
     "jest": "^27.5.1",

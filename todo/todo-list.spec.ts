@@ -1,7 +1,7 @@
 import {BasicItem} from "./basic-item";
-import {Item} from "./item";
+import {ConflictItemException, Item, ItemContentException} from "./item";
 import {DateComparator} from "../date_comparator/date-comparator";
-import {TodoList} from "./todo-list";
+import {TodoList, TodoListCapacityException, TodoListException} from "./todo-list";
 import {EmailSenderService} from "../email_sender/email-sender.service";
 import {User} from "../user/user";
 
@@ -40,7 +40,10 @@ describe('todo list', ()=>{
         const firstItem: Item = new BasicItem('name', 'content1');
         const theSameNameAgain: Item = new BasicItem('name', 'content2');
         emptyTodo.add(firstItem);
-        expect(() => emptyTodo.add(theSameNameAgain)).toThrow(Error)
+
+        const addingTheSameNameAgain = () => emptyTodo.add(theSameNameAgain);
+        expect(addingTheSameNameAgain).toThrow(ConflictItemException)
+        expect(addingTheSameNameAgain).toThrow('Item name already in To Do List')
     })
 
     it('should not add an 11th item', ()=>{
@@ -48,18 +51,24 @@ describe('todo list', ()=>{
             const uniqueNameItem = new BasicItem(`name${i}`, 'content');
             emptyTodo.add(uniqueNameItem)
         }
-        expect(() => emptyTodo.add(item)).toThrow(Error)
+        const addingInFullTodoList = () => emptyTodo.add(item);
+        expect(addingInFullTodoList).toThrow(TodoListCapacityException)
+        expect(addingInFullTodoList).toThrow('To Do List is already full.')
     })
 
     it('should not add an item with a content too long (1001 chars)', ()=>{
         item.content = Array(1002).join('a'); // string of 1001 'a'
-        expect(() => emptyTodo.add(item)).toThrow(Error)
+        const addingAnItemWithTooLongContent = () => emptyTodo.add(item)
+        expect(addingAnItemWithTooLongContent).toThrow(ItemContentException)
+        expect(addingAnItemWithTooLongContent).toThrow('Item content is too long.')
     })
 
     it('should not add item before 30 mins since the last one', ()=>{
         mockDateComparator.getMinutesBetweenTwoDates = jest.fn().mockReturnValue(30)
         emptyTodo.add(item);
-        expect(() => emptyTodo.add(new BasicItem('name2', 'content'))).toThrow(Error)
+        const addingItem30minutesAfterTheLastOne = () => emptyTodo.add(new BasicItem('name2', 'content'));
+        expect(addingItem30minutesAfterTheLastOne).toThrow(TodoListException)
+        expect(addingItem30minutesAfterTheLastOne).toThrow('To soon to add an item');
     })
 
     it('should send an email at the 8th item added', ()=>{

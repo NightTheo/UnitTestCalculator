@@ -1,5 +1,5 @@
 import {EmailValidator} from "./email.validator";
-import {TodoList} from "../todo/todo-list";
+import {ConflictTodoListException, TodoList} from "../todo/todo-list";
 import {SimpleDateComparator} from "../date_comparator/simple.date-comparator";
 import {SengridEmailSenderService} from "../email_sender/sengrid.email-sender.service";
 
@@ -41,8 +41,9 @@ export class User {
 
     public createNewToDoList() {
         const hasAlreadyToDoList = this.todolist != null;
-        if(hasAlreadyToDoList) throw new Error("User has already created a To Do List.");
-        if(!this.isValid()) throw new Error("User is not valid for create a To Do List.");
+        if(hasAlreadyToDoList) throw new ConflictTodoListException("User has already created a To Do List.");
+        if(!this.isValid()) throw new UserException("User is not valid for create a To Do List.");
+
         this.todolist = new TodoList(
             new SimpleDateComparator(),
             new SengridEmailSenderService(),
@@ -59,8 +60,18 @@ export class User {
         try {
             this.emailValidator.check(this.email);
             return true;
-        } catch{
+        } catch {
             return false;
         }
+    }
+}
+
+export class UserException implements Error {
+    message: string;
+    name: string;
+
+    constructor(msg: string) {
+        this.name = 'UserException'
+        this.message = msg;
     }
 }

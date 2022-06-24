@@ -1,5 +1,6 @@
-import {User} from "./user";
+import {User, UserException} from "./user";
 import {EmailValidator} from "./email.validator";
+import {ConflictTodoListException} from "../todo/todo-list";
 
 const twentyYearsAgo: Date = new Date();
 twentyYearsAgo.setFullYear(new Date().getFullYear() - 20);
@@ -122,13 +123,17 @@ describe('todo list', () => {
         expect(goodUser.todolist).not.toBeFalsy();
     })
 
-    it('should throw error if user is invalid', () => {
+    it('should throw UserException if user is invalid', () => {
         goodUser.firstname = ''
-        expect(() => goodUser.createNewToDoList()).toThrow(Error)
+        const creation = () => goodUser.createNewToDoList();
+        expect(creation).toThrow(UserException)
+        expect(creation).toThrow("User is not valid for create a To Do List.")
     })
 
-    it('should throw error if user has already a todolist', () => {
+    it('should throw UserException if user has already a todolist', () => {
         goodUser.createNewToDoList();
-        expect(() => goodUser.createNewToDoList()).toThrow(Error)
+        const creation = () => goodUser.createNewToDoList();
+        expect(creation).toThrow(ConflictTodoListException)
+        expect(creation).toThrow("User has already created a To Do List.")
     })
 })
